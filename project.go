@@ -27,6 +27,8 @@ func printBoard(board []int){
 }
 
 //check to see if someone has won...could maybe do cleaner with switch or something else but this was easier
+//add check case for board being full and no winner
+
 func checkWinner(board []int)int{
 	value := 0
 
@@ -91,7 +93,8 @@ func checkWinner(board []int)int{
  return value
 }
 
-//channels borked as heck and it ruined play logic, need to keep this going until someone wins
+//channels seem to be working but it ruined play logic so just using random numbers
+//need to keep this going until someone wins or board is full
 func playGame(order int, name string, whoseTurn chan int, board []int){
 	thisPlayer := player{name, order, true}  //each player thread has its own player
 	fmt.Println(thisPlayer)
@@ -113,7 +116,7 @@ func playGame(order int, name string, whoseTurn chan int, board []int){
 }
 
 func main(){
-	runtime.GOMAXPROCS(2) //makes it use 2x cpu cores instead of 1 core interleaved
+	runtime.GOMAXPROCS(2) //makes it use up to 2x cpu cores instead of 1 core interleaved
 
 	gameboard := make([]int, 9)		//declare gameboard
 	for i := 0; i < 9; i++ {
@@ -121,7 +124,7 @@ func main(){
 	}
 	printBoard(gameboard)		//test code
 
-	rand.Seed(time.Now().UTC().UnixNano()) //seed random num generator
+	rand.Seed(time.Now().UTC().UnixNano())
 	
 	gameboard[rand.Intn(9)] = 2  //test code
 	printBoard(gameboard)
