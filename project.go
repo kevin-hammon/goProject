@@ -26,14 +26,78 @@ func printBoard(board []int){
 		fmt.Println("")
 }
 
+//check to see if someone has won...could maybe do cleaner with switch or something else but this was easier
+func checkWinner(board []int)int{
+	value := 0
+
+	if board[0] == board[1]  {
+		if board[1] == board[2]{
+			if board[0] != 0 {
+			value = board[0]		
+			}
+		}
+	}
+	if board[3] == board[4]  {
+		if board[4] == board[5]{
+			if board[3] != 0 {
+			value = board[3]		
+			}
+	}
+}
+	if board[6] == board[7]  {
+		if board[7] == board[8]{
+			if board[6] != 0 {
+				value = board[6]	
+			}
+		}
+	}
+	if board[0] == board[3]  {
+		if board[3] == board[6]{
+			if board[0] != 0 {
+				value = board[0]		
+			}
+		}	
+	}
+	if board[1] == board[4]  {
+		if board[4] == board[7]{
+			if board[1] != 0 {
+				value = board[1]		
+			}	
+		}
+	}
+	if board[2] == board[5]  {
+		if board[5] == board[8]{
+			if board[2] != 0 {
+				value = board[2]		
+			}
+		}
+	}
+	if board[0] == board[4]  {
+		if board[4] == board[8]{
+			if board[0] != 0 {
+				value = board[0]		
+			}
+		}
+	}
+	if board[2] == board[4]  {
+		if board[4] == board[6]{
+			if board[2] != 0 {
+			value = board[2]		
+			}
+		}
+	}
+
+
+ return value
+}
+
 //channels borked as heck and it ruined play logic, need to keep this going until someone wins
 func playGame(order int, name string, whoseTurn chan int, board []int){
 	thisPlayer := player{name, order, true}  //each player thread has its own player
 	fmt.Println(thisPlayer)
-	
-
 		
 	turn := <- whoseTurn
+	fmt.Println(turn)
 
 	if turn == thisPlayer.order {
 		i := rand.Intn(9)
@@ -69,4 +133,15 @@ func main(){
 
 	var input string
 	fmt.Scanln(&input) //prevent main from closing b4 other threads fin
+
+	//test code this had to go after fmt.Scanln or would check winner and declare 0 winner earlier
+	gameboard[2] = 1
+	gameboard[4] = 1
+	gameboard[6] = 1
+
+	printBoard(gameboard)
+	foo := checkWinner(gameboard)
+	if foo == 0 {
+		fmt.Println("No winner")
+	} else { fmt.Println("the winner is ", foo) }
 }
