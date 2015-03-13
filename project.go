@@ -28,69 +28,27 @@ func printBoard(board []int){
 		fmt.Println("")
 }
 
-//check to see if someone has won...could maybe do cleaner with switch or something else but this was easier
+//check to see if someone has won
 //add check case for board being full and no winner
-
 func checkWinner(board []int)int{
-	value := -1
-
-	if board[0] == board[1]  {
-		if board[1] == board[2]{
-			if board[0] != 0 {
-			value = board[0]		
-			}
+	for i := 0; i < 3; i++ {
+		if board [i*3] != 0 && board[i*3] == board[(i*3)+1] && board[i*3] == board[(i*3)+2] {
+			return board[i*3]
+		}
+		if board[i] != 0 && board[i] == board[i+3] && board[i] == board[i+6] {
+			return board[i]
 		}
 	}
-	if board[3] == board[4]  {
-		if board[4] == board[5]{
-			if board[3] != 0 {
-			value = board[3]		
-			}
+	
+	if board[0] != 0 && board[0] == board[4] && board[0] == board[8] {
+		return board[0]
 	}
-}
-	if board[6] == board[7]  {
-		if board[7] == board[8]{
-			if board[6] != 0 {
-				value = board[6]	
-			}
-		}
+	
+	if board[2] != 0 && board[2] == board[4] && board[2] == board[6] {
+		return board[2]
 	}
-	if board[0] == board[3]  {
-		if board[3] == board[6]{
-			if board[0] != 0 {
-				value = board[0]		
-			}
-		}	
-	}
-	if board[1] == board[4]  {
-		if board[4] == board[7]{
-			if board[1] != 0 {
-				value = board[1]		
-			}	
-		}
-	}
-	if board[2] == board[5]  {
-		if board[5] == board[8]{
-			if board[2] != 0 {
-				value = board[2]		
-			}
-		}
-	}
-	if board[0] == board[4]  {
-		if board[4] == board[8]{
-			if board[0] != 0 {
-				value = board[0]		
-			}
-		}
-	}
-	if board[2] == board[4]  {
-		if board[4] == board[6]{
-			if board[2] != 0 {
-			value = board[2]		
-			}
-		}
-	}	
- return value
+	
+	return -1
 }
 
 //channels seem to be working but it ruined play logic so just using random numbers
@@ -101,35 +59,35 @@ func playGame(order int, name string, whoseTurn chan int){
 	fmt.Println(thisPlayer)
 
 	for {
-	turn := <- whoseTurn
-	if turn != thisPlayer.order	{
-		if turn == 2 {
-			whoseTurn <- 1
-		} else {whoseTurn <- 2}
-	} else	if turn == thisPlayer.order {
-		for keepTrying := 0; keepTrying != 1; {
-		i := rand.Intn(9)
-		if gameboard[i] == 0 {
-			gameboard[i] = thisPlayer.order
-			keepTrying = 1
+		turn := <- whoseTurn
+		if turn != thisPlayer.order	{
+			if turn == 2 {
+				whoseTurn <- 1
+			} else {whoseTurn <- 2}
+		} else if turn == thisPlayer.order {
+			for keepTrying := 0; keepTrying != 1; {
+				i := rand.Intn(9)
+				if gameboard[i] == 0 {
+					gameboard[i] = thisPlayer.order
+					keepTrying = 1
+				}
+			}
+
+			printBoard(gameboard)
+
+			if turn == thisPlayer.order {
+				if thisPlayer.order == 1 {
+					whoseTurn <- 2
+				} else { whoseTurn <- 1}
+			}
 		}
-		
-	}
-
-	printBoard(gameboard)
-
-	if turn == thisPlayer.order {
-		if thisPlayer.order == 1 {
-			whoseTurn <- 2
-		} else { whoseTurn <- 1}
+		time.Sleep(1000*time.Millisecond)
+		if checkWinner(gameboard) != -1 {
+			break
+		}
 	}
 }
-time.Sleep(1000*time.Millisecond)
-if checkWinner(gameboard) != -1 {
-	break
-}
-}
-}
+
 
 
 func main(){
